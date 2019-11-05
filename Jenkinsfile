@@ -22,11 +22,6 @@ pipeline {
             }
             steps {
                 script {
-                sh 'docker build -t $registry:$GIT_COMMIT .'
-                docker.withRegistry( '', registryCredential ) {
-                    sh 'docker push $registry:$GIT_COMMIT'
-                    sh 'docker rmi $registry:$GIT_COMMIT'
-                }
                 sh """
                   curl -D - -X \"POST\" \
                     -H \"content-type: application/json\" \
@@ -34,6 +29,7 @@ pipeline {
                     -d '{\"argString\": \"-namespace $namespace -image $registry:$GIT_COMMIT -deployment $deployment\"}' \
                     https://fox.linea.gov.br/api/1/job/c1cd3d02-d1d7-47f1-b503-4d97a4755df6/executions
                   """
+		}
             }
         }
     }
